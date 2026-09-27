@@ -1,4 +1,6 @@
 from urllib.parse import urlparse
+from prlens.github_client import GitHubClient
+
 
 import typer
 
@@ -34,6 +36,28 @@ def review(pr_url: str):
     typer.echo(f"Owner: {owner}")
     typer.echo(f"Repository: {repo}")
     typer.echo(f"PR: {pr_number}")
+
+@app.command()
+def review(pr_url: str):
+    owner, repo, pr_number = parse_pr_url(pr_url)
+
+    client = GitHubClient()
+    pull_request = client.get_pull_request(owner, repo, pr_number)
+
+    typer.echo(f"Title: {pull_request['title']}")
+    typer.echo(f"Author: {pull_request['user']['login']}")
+    typer.echo(f"State: {pull_request['state']}")
+    typer.echo(f"Changed files: {pull_request['changed_files']}")
+
+    # Fetch PR diff
+    diff = client.get_pull_request_diff(
+        owner,
+        repo,
+        pr_number,
+    )
+
+    typer.echo(f"Diff size: {len(diff)} characters")
+
 
 
 @app.callback()
