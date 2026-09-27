@@ -9,9 +9,7 @@ def test_get_pull_request(httpx_mock):
             "title": "Test PR",
             "state": "open",
             "changed_files": 2,
-            "user": {
-                "login": "octocat"
-            }
+            "user": {"login": "octocat"},
         },
         status_code=200,
     )
@@ -29,6 +27,7 @@ def test_get_pull_request(httpx_mock):
     assert result["changed_files"] == 2
     assert result["user"]["login"] == "octocat"
 
+
 def test_get_pull_request_diff(httpx_mock):
     expected_diff = """diff --git a/example.py b/example.py
                     index 1234567..7654321 100644
@@ -42,9 +41,7 @@ def test_get_pull_request_diff(httpx_mock):
     httpx_mock.add_response(
         method="GET",
         url="https://api.github.com/repos/openai/openai-python/pulls/123",
-        headers={
-            "Content-Type": "application/vnd.github.v3.diff"
-        },
+        headers={"Content-Type": "application/vnd.github.v3.diff"},
         text=expected_diff,
         status_code=200,
     )

@@ -27,15 +27,9 @@ class GitHubClient:
 
         response = httpx.get(
             url,
-            headers={
-                "Accept": "application/vnd.github.v3.diff"
-            },
+            headers={"Accept": "application/vnd.github.v3.diff"},
         )
 
         response.raise_for_status()
 
         return response.text
-
-
-
-

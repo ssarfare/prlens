@@ -1,8 +1,8 @@
 from urllib.parse import urlparse
-from prlens.github_client import GitHubClient
-
 
 import typer
+
+from prlens.github_client import GitHubClient
 
 app = typer.Typer()
 
@@ -24,18 +24,10 @@ def parse_pr_url(url: str) -> tuple[str, str, int]:
     try:
         pr_number = int(parts[3])
     except ValueError:
-        raise ValueError("Invalid GitHub PR number")
+        raise ValueError("Invalid GitHub PR number") from None
 
     return owner, repo, pr_number
 
-
-@app.command()
-def review(pr_url: str):
-    owner, repo, pr_number = parse_pr_url(pr_url)
-
-    typer.echo(f"Owner: {owner}")
-    typer.echo(f"Repository: {repo}")
-    typer.echo(f"PR: {pr_number}")
 
 @app.command()
 def review(pr_url: str):
@@ -59,7 +51,6 @@ def review(pr_url: str):
     typer.echo(f"Diff size: {len(diff)} characters")
 
 
-
 @app.callback()
 def main():
     """PRLens - AI-powered pull request reviewer."""
@@ -68,5 +59,3 @@ def main():
 
 if __name__ == "__main__":
     app()
-
-

@@ -4,9 +4,7 @@ from prlens.cli import parse_pr_url
 
 
 def test_parse_valid_pr_url():
-    owner, repo, pr_number = parse_pr_url(
-        "https://github.com/openai/openai-python/pull/123"
-    )
+    owner, repo, pr_number = parse_pr_url("https://github.com/openai/openai-python/pull/123")
 
     assert owner == "openai"
     assert repo == "openai-python"
@@ -14,9 +12,7 @@ def test_parse_valid_pr_url():
 
 
 def test_parse_pr_url_with_trailing_slash():
-    owner, repo, pr_number = parse_pr_url(
-        "https://github.com/openai/openai-python/pull/123/"
-    )
+    owner, repo, pr_number = parse_pr_url("https://github.com/openai/openai-python/pull/123/")
 
     assert owner == "openai"
     assert repo == "openai-python"
@@ -30,6 +26,4 @@ def test_reject_non_github_url():
 
 def test_reject_github_issue_url():
     with pytest.raises(ValueError):
-        parse_pr_url(
-            "https://github.com/openai/openai-python/issues/123"
-        )
+        parse_pr_url("https://github.com/openai/openai-python/issues/123")
