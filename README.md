@@ -58,16 +58,15 @@ PRLens is currently under active development.
 
 ### Phase 1 — Core PR Reviewer
 
-
-- [ ] CLI
-- [ ] GitHub PR URL parsing
-- [ ] GitHub API integration
-- [ ] PR diff retrieval
+- [x] CLI
+- [x] GitHub PR URL parsing
+- [x] GitHub API integration
+- [x] PR diff retrieval
 - [ ] Diff parsing
 - [ ] Model-agnostic LLM provider interface
 - [ ] Initial LLM provider
 - [ ] Structured review output
-- [ ] Unit tests
+- [x] Unit tests
 
 
 ### Phase 2 — Repository-Aware Reviews
