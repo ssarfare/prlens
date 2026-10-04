@@ -17,6 +17,45 @@ PRLens is built with a **model-agnostic architecture** using LiteLLM, allowing r
 - Provide consistent review output across different models
 - Validate changes through automated CI, linting, formatting, and tests
 
+## Example Review
+
+```text
+Title: Add api_key parameter to Moderation.create
+Author: zafercavdar
+State: closed
+Changed files: 1
+
+Changed files parsed: 1
+- openai/api_resources/moderation.py (1 diff section)
+
+Model: gemini/gemini-3.5-flash
+Estimated input tokens: 808
+Continue with review? [y/N]: y
+
+⚠️ NEEDS ATTENTION
+
+Summary
+-------
+Adds support for passing an explicit API key to the Moderation API,
+but additional test coverage is recommended.
+
+Findings
+--------
+
+🟠 MEDIUM | testing | openai/api_resources/moderation.py:25
+
+The new api_key path is not covered by tests.
+
+💡 Add a unit test verifying that an explicitly supplied API key is
+propagated to the API request.
+
+🧪 Testing Gaps
+---------------
+- Explicit API key propagation
+```
+
+
+
 ## How It Works
 
 ```text
