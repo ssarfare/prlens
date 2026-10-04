@@ -62,7 +62,7 @@ PRLens is currently under active development.
 - [x] GitHub PR URL parsing
 - [x] GitHub API integration
 - [x] PR diff retrieval
-- [ ] Diff parsing
+- [x] Diff parsing
 - [ ] Model-agnostic LLM provider interface
 - [ ] Initial LLM provider
 - [ ] Structured review output

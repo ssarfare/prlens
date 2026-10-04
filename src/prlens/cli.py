@@ -2,6 +2,7 @@ from urllib.parse import urlparse
 
 import typer
 
+from prlens.diff_parser import parse_diff
 from prlens.github_client import GitHubClient
 
 app = typer.Typer()
@@ -48,7 +49,12 @@ def review(pr_url: str):
         pr_number,
     )
 
-    typer.echo(f"Diff size: {len(diff)} characters")
+    changed_files = parse_diff(diff)
+    typer.echo()
+    typer.echo(f"Changed files parsed: {len(changed_files)}")
+
+    for changed_file in changed_files:
+        typer.echo(f"- {changed_file.path} ({len(changed_file.sections)} diff section(s))")
 
 
 @app.callback()
