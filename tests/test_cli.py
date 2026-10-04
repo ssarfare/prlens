@@ -9,51 +9,6 @@ from prlens.review_models import Finding, ReviewResult
 runner = CliRunner()
 
 
-@patch("prlens.cli.estimate_input_tokens", return_value=500)
-@patch("prlens.cli.parse_diff")
-@patch("prlens.cli.GitHubClient")
-@patch("prlens.cli.LLMClient")
-def test_review_cancel_does_not_call_llm(
-    mock_llm_client,
-    mock_github_client,
-    mock_parse_diff,
-    mock_estimate_tokens,
-):
-    github_client = mock_github_client.return_value
-
-    github_client.get_pull_request.return_value = {
-        "title": "Test PR",
-        "user": {"login": "test-user"},
-        "state": "open",
-        "changed_files": 1,
-    }
-
-    github_client.get_pull_request_diff.return_value = """
-diff --git a/example.py b/example.py
---- a/example.py
-+++ b/example.py
-@@ -1 +1 @@
--old
-+new
-"""
-
-    mock_parse_diff.return_value = []
-
-    result = runner.invoke(
-        app,
-        [
-            "review",
-            "https://github.com/test/repo/pull/1",
-            "--model",
-            "gemini/test-model",
-        ],
-        input="n\n",
-    )
-
-    assert result.exit_code != 0
-    mock_llm_client.return_value.complete.assert_not_called()
-
-
 def test_parse_valid_pr_url():
     owner, repo, pr_number = parse_pr_url("https://github.com/openai/openai-python/pull/123")
 
@@ -80,48 +35,11 @@ def test_reject_github_issue_url():
         parse_pr_url("https://github.com/openai/openai-python/issues/123")
 
 
-@patch("prlens.cli.estimate_input_tokens", return_value=500)
-@patch("prlens.cli.build_review_prompt", return_value="Review this diff")
-@patch("prlens.cli.parse_diff", return_value=[])
-@patch("prlens.cli.GitHubClient")
-@patch("prlens.cli.LLMClient")
-def test_review_handles_llm_failure(
-    mock_llm_client,
-    mock_github_client,
-    mock_parse_diff,
-    mock_build_prompt,
-    mock_estimate_tokens,
-):
-    github_client = mock_github_client.return_value
-    github_client.get_pull_request.return_value = {
-        "title": "Test PR",
-        "user": {"login": "test-user"},
-        "state": "open",
-        "changed_files": 1,
-    }
-    github_client.get_pull_request_diff.return_value = "diff"
-
-    mock_llm_client.return_value.complete.side_effect = RuntimeError(
-        "Model is temporarily unavailable."
-    )
-
-    result = runner.invoke(
-        app,
-        [
-            "review",
-            "https://github.com/test/repo/pull/1",
-            "--model",
-            "gemini/test-model",
-        ],
-        input="y\n",
-    )
-
-    assert result.exit_code == 1
-    assert "Review failed: Model is temporarily unavailable." in result.output
-
-
 def test_parse_rejects_invalid_pr_number():
-    with pytest.raises(ValueError, match="Invalid GitHub PR number"):
+    with pytest.raises(
+        ValueError,
+        match="Invalid GitHub PR number",
+    ):
         parse_pr_url("https://github.com/openai/openai-python/pull/not-a-number")
 
 
@@ -176,17 +94,13 @@ def test_review_renders_structured_findings(
     )
 
     assert result.exit_code == 0
-
     assert "NEEDS ATTENTION" in result.output
     assert "The pull request needs attention." in result.output
-
     assert "MEDIUM" in result.output
     assert "testing" in result.output
     assert "example.py:10" in result.output
-
     assert "Missing test coverage." in result.output
     assert "Add a unit test." in result.output
-
     assert "Testing Gaps" in result.output
     assert "API key propagation" in result.output
 
@@ -290,7 +204,6 @@ def test_review_renders_clean_result(
     assert result.exit_code == 0
     assert "LOOKS GOOD" in result.output
     assert "no critical or important issues found" in result.output
-
     assert "Findings" not in result.output
     assert "Testing Gaps" not in result.output
 

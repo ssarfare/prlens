@@ -1,7 +1,11 @@
 import pytest
 
 from prlens.diff_parser import ChangedFile, DiffSection
-from prlens.prompt_builder import build_review_prompt, load_skill
+from prlens.prompt_builder import (
+    build_review_prompt,
+    format_line_range,
+    load_skill,
+)
 
 
 def test_load_general_review_skill():
@@ -40,3 +44,15 @@ def test_build_review_prompt():
     assert "-old" in prompt
     assert "+new" in prompt
     assert "correctness" in prompt
+
+
+def test_format_line_range_zero_count():
+    assert format_line_range(10, 0) == "none"
+
+
+def test_format_line_range_single_line():
+    assert format_line_range(10, 1) == "10"
+
+
+def test_format_line_range_multiple_lines():
+    assert format_line_range(10, 3) == "10-12"
